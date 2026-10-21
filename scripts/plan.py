@@ -39,21 +39,23 @@ SCHEMA = """{
   "tools": ["brands or products named in the video, if any (for the description links)"],
   "thumbnail": {"headline": "2-5 punchy words", "tags": ["1-3 short labels"], "broll": "2-4 word stock photo search"},
   "scenes": [
-    {"chapter": "short chapter label", "narration": "spoken text", "broll": "2-4 word stock footage search", "visual": VISUAL}
+    {"chapter": "short chapter label", "narration": "spoken text", "broll": ["3-5 different stock footage searches, 2-4 words each"], "visual": VISUAL}
   ],
   "shorts": [
-    {"title": "max 70 characters", "scenes": [{"narration": "spoken text", "broll": "2-4 word stock footage search", "visual": VISUAL}]}
+    {"title": "max 70 characters", "scenes": [{"narration": "spoken text", "broll": ["3-5 different stock footage searches, 2-4 words each"], "visual": VISUAL}]}
   ],
   "facts_to_check": [{"claim": "every statistic, date, price or forecast used in narration", "source": "https://..."}],
   "sources": ["https://... pages you relied on"]
 }
 
-"broll" is the search phrase for free stock footage shown behind the scene. Make it concrete and filmable,
-e.g. "smart fridge kitchen", "electric car charging", "robot vacuum floor", "city traffic night".
-Avoid brand names and abstract words in broll.
+"broll" is a list of searches for free stock footage. The video cuts to a new shot every 3 seconds, cycling
+through the list, so give 3-5 DIFFERENT shots that together illustrate the narration, like a film editor would:
+e.g. ["smart fridge kitchen", "woman cooking modern kitchen", "touchscreen appliance close up", "family dinner table"].
+Make each concrete and filmable: objects, people doing things, places, close-ups, aerial city shots, futuristic
+technology. Avoid brand names and abstract words.
 
 VISUAL is ONE of:
-  {"type": "broll", "caption": "max 7 punchy words shown big over full-screen footage"}
+  {"type": "broll", "caption": "max 5 punchy words flashed over full-screen footage, or \"\" for none"}
   {"type": "rank", "number": 3, "heading": "the trend's name, max 7 words", "sub": "max 10 words"}
   {"type": "stat", "value": "short number like 68% or $1.2T or 2029", "label": "what it means, max 12 words", "source": "short source name"}
   {"type": "title", "heading": "max 8 words", "sub": "max 12 words"}
@@ -101,8 +103,9 @@ Voice and style:
 - End with a question for the comments and a reason to subscribe.
 
 Long video: 9 to 16 scenes, {words[0]} to {words[1]} words of narration in total, 20 to 80 words per scene.
-Give scenes a "chapter" label (use at least 4, the first one "Intro"). Mix visuals for variety: about a third "broll",
-plus "rank", "stat" and "table" where they fit. Use "web" at most twice. Never use the same visual type 3 times in a row.
+Give scenes a "chapter" label (use at least 4, the first one "Intro"). The look is cinematic: mostly full-screen footage, little
+text. About two thirds of scenes are "broll" (half of those with no caption), plus "rank" for each countdown item
+and "stat" for strong numbers. At most one "table", "bullets" or "verdict" in the whole video, and "web" at most once.
 
 Shorts: write exactly {n_shorts}. Each stands alone, {s_words[0]} to {s_words[1]} words, 2 to 4 scenes. The first
 sentence is a strong hook; the last points to the full video on the channel. Prefer "broll" and "stat" visuals.
@@ -138,8 +141,10 @@ def validate(script, n_shorts, config):
         v = s.get("visual", {})
         if v.get("type") not in VISUAL_TYPES:
             problems.append(f"unknown visual type {v.get('type')}")
-        if not s.get("broll"):
-            s["broll"] = v.get("heading") or v.get("caption") or "technology"
+        b = s.get("broll")
+        if isinstance(b, str):
+            b = [x.strip() for x in b.split("|") if x.strip()]
+        s["broll"] = [str(x) for x in (b or [])][:6] or [v.get("heading") or v.get("caption") or "technology"]
         if v.get("type") == "web" and not str(v.get("url", "")).startswith("http"):
             problems.append(f"web visual without a valid url: {v}")
         if not s.get("narration", "").strip():

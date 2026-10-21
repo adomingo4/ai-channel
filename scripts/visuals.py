@@ -242,7 +242,8 @@ def encode_scroll(bg_clip, frame_png, site_png, win, kind, seconds, out_path):
 
 def broll_query(scene, v):
     q = scene.get("broll") or v.get("heading") or v.get("caption") or v.get("label") or "technology"
-    return str(q)[:60]
+    qs = q if isinstance(q, list) else [x for x in str(q).split("|")]
+    return [str(x).strip()[:60] for x in qs if str(x).strip()] or ["technology"]
 
 
 def scene_clip(pw, browser, scene, kind, seconds, name, config):
@@ -252,7 +253,13 @@ def scene_clip(pw, browser, scene, kind, seconds, name, config):
     clip.parent.mkdir(parents=True, exist_ok=True)
     v = dict(scene["visual"])
     w, h = SIZES[kind]
-    bg = stock.get_clip(broll_query(scene, v), kind, seconds + 0.5, name)
+    # web pages and lists hold one calm shot; everything else cuts to a new shot every ~3 seconds
+    calm = v["type"] in ("web", "table", "bullets", "steps", "verdict")
+    if calm:
+        bg = stock.get_clip(broll_query(scene, v), kind, seconds + 0.5, name)
+    else:
+        bg = stock.get_montage(broll_query(scene, v), kind, seconds + 0.5, name,
+                               shot=3.2 if kind == "long" else 2.4)
 
     if v["type"] == "web":
         site = tmp / f"{name}_site.png"
@@ -282,7 +289,12 @@ def scene_clip(pw, browser, scene, kind, seconds, name, config):
         png = tmp / f"{name}_card.png"
         html_text, treatment = overlay_html(v, kind, 99, config)
         shot(pw, html_text, w, h, png)
-        layers.append((png, 0.0, seconds))
+        # over fast cuts a caption is a short punch, not wallpaper: on for the first few seconds
+        end = min(seconds, {"broll": 4.0, "rank": 5.0}.get(v["type"], seconds))
+        if v["type"] == "broll" and not str(v.get("caption", "")).strip():
+            layers = []
+        else:
+            layers.append((png, 0.0, end))
     compose(bg, layers, treatment, seconds, clip, kind)
     return clip
 

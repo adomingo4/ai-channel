@@ -47,7 +47,7 @@ def long_description(script, marks, config, affiliates):
 
 
 def short_description(short, script, long_id, config, affiliates):
-    parts = [f"Full comparison: https://youtu.be/{long_id}" if long_id else script["title"]]
+    parts = [f"Full video: https://youtu.be/{long_id}" if long_id else script["title"]]
     links = tool_lines(script.get("tools", []), affiliates)
     if links:
         parts.append("\n".join(links))

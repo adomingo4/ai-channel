@@ -90,6 +90,7 @@ def _gradient(kind, seconds, path, seed):
 
 def get_clip(query, kind, seconds, name):
     """A background clip for one scene, already cut to `seconds` and sized to the frame."""
+    query = _queries(query)[0]
     folder = OUT / "stock"
     folder.mkdir(parents=True, exist_ok=True)
     seed = int(hashlib.md5(f"{query}{name}".encode()).hexdigest()[:6], 16)
@@ -124,8 +125,91 @@ def get_clip(query, kind, seconds, name):
     return out
 
 
+def _queries(query):
+    if isinstance(query, (list, tuple)):
+        qs = [str(q).strip() for q in query if str(q).strip()]
+    else:
+        qs = [q.strip() for q in str(query or "").split("|") if q.strip()]
+    return qs or ["technology"]
+
+
+def _cut(src, start, seconds, w, h, out):
+    """One shot: `seconds` of `src` from `start`, filling the frame with a slow push-in."""
+    zoom = f"scale={int(w * 1.08)}:{int(h * 1.08)},crop={w}:{h}:x='(iw-ow)/2*(1-t/{seconds:.3f})':y='(ih-oh)/2*(1-t/{seconds:.3f})'"
+    run(["ffmpeg", "-hide_banner", "-loglevel", "error", "-y", "-ss", f"{start:.2f}", "-stream_loop", "-1",
+         "-i", str(src), "-vf", f"scale={w}:{h}:force_original_aspect_ratio=increase,crop={w}:{h},{zoom},fps=30,"
+         "eq=contrast=1.06:saturation=1.12,format=yuv420p",
+         "-t", f"{seconds:.3f}", "-an", "-c:v", "libx264", "-preset", "veryfast", "-crf", "19", str(out)])
+    return out
+
+
+def get_montage(query, kind, seconds, name, shot=3.0):
+    """Fast-cut background: a new stock clip every ~`shot` seconds, from several searches in turn.
+
+    query: a list of searches (or "a | b | c"). Falls back to get_clip when there's no footage.
+    """
+    qs = _queries(query)
+    n = max(1, round(seconds / shot))
+    if n == 1 or not (_key() or os.environ.get("TEST_STOCK_DIR")):
+        return get_clip(qs[0], kind, seconds, name)
+    folder = OUT / "stock"
+    folder.mkdir(parents=True, exist_ok=True)
+    w, h = (1920, 1080) if kind == "long" else (1080, 1920)
+    rnd = random.Random(name)
+    pools, sources = {}, []
+    for i in range(n):
+        q = qs[i % len(qs)]
+        src, dur = None, 0
+        if _key():
+            try:
+                if q not in pools:
+                    pools[q] = _search_video(q, kind)
+                pool = pools[q]
+                while pool and src is None:
+                    vid, link, dur = pool.pop(0)
+                    if vid in _used and len(pool) > 0:
+                        continue
+                    raw = folder / f"stock_{vid}.mp4"
+                    if not raw.exists():
+                        _download(link, raw)
+                    _used.add(vid)
+                    src = raw
+            except Exception as e:
+                print(f"  ! stock search failed for '{q}' ({str(e)[:60]})")
+        if src is None:
+            test = os.environ.get("TEST_STOCK_DIR")
+            if test and os.path.isdir(test):
+                files = sorted(f for f in os.listdir(test) if f.endswith(".mp4"))
+                if files:
+                    src, dur = os.path.join(test, files[(i + len(name)) % len(files)]), 6
+        if src is None and sources:
+            src, dur = sources[i % len(sources)]   # reuse one of this scene's shots, another moment of it
+        if src is not None:
+            sources.append((src, dur))
+    if not sources:
+        return get_clip(qs[0], kind, seconds, name)
+    # shot lengths vary a little so the rhythm doesn't feel mechanical; they add up to `seconds`
+    lens = [rnd.uniform(0.85, 1.15) for _ in range(n)]
+    total = sum(lens)
+    lens = [seconds * x / total for x in lens]
+    parts = []
+    for i, ((src, dur), ln) in enumerate(zip(sources, lens)):
+        start = rnd.uniform(0, max(0.0, (dur or 0) - ln - 0.5)) if dur and dur > ln + 1 else 0
+        parts.append(_cut(src, start, ln + 0.02, w, h, folder / f"{name}_s{i}.mp4"))
+    lst = folder / f"{name}_list.txt"
+    lst.write_text("".join(f"file '{p.resolve()}'\n" for p in parts))
+    out = folder / f"{name}.mp4"
+    run(["ffmpeg", "-hide_banner", "-loglevel", "error", "-y", "-f", "concat", "-safe", "0", "-i", str(lst),
+         "-t", f"{seconds:.3f}", "-c:v", "libx264", "-preset", "veryfast", "-crf", "19", "-pix_fmt", "yuv420p",
+         "-r", "30", str(out)])
+    for p in parts:
+        p.unlink(missing_ok=True)
+    return out
+
+
 def get_photo(query, path):
     """A landscape stock photo for the thumbnail, or None."""
+    query = _queries(query)[0] if query else query
     if not _key() or not query:
         return None
     try:
