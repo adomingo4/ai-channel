@@ -1,0 +1,51 @@
+name: Weekly scripts
+
+on:
+  schedule:
+    # Thursday 15:17 UTC = 18:17 in Doha, ready for you to record on the weekend
+    - cron: "17 15 * * 4"
+  workflow_dispatch:
+    inputs:
+      videos:
+        description: "How many videos to script (blank = config.json)"
+        required: false
+      topic:
+        description: "Topic id for the first video (blank = next in topics.json)"
+        required: false
+
+permissions:
+  contents: write
+  issues: write
+
+concurrency:
+  group: pipeline
+  cancel-in-progress: false
+
+jobs:
+  scripts:
+    runs-on: ubuntu-latest
+    timeout-minutes: 30
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+
+      - run: pip install requests anthropic
+
+      - name: Research and write this week's scripts
+        env:
+          GEMINI_API_KEY: ${{ secrets.GEMINI_API_KEY }}
+          ANTHROPIC_API_KEY: ${{ secrets.ANTHROPIC_API_KEY }}
+          GH_TOKEN: ${{ github.token }}
+          VIDEOS: ${{ github.event.inputs.videos }}
+          TOPIC: ${{ github.event.inputs.topic }}
+        run: python scripts/new_episodes.py
+
+      - name: Save the scripts to the repository
+        run: |
+          git config user.name "video-bot"
+          git config user.email "video-bot@users.noreply.github.com"
+          git add episodes state/used.json
+          git diff --cached --quiet || (git commit -m "Scripts for the week" && git push)
