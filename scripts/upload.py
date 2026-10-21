@@ -34,11 +34,13 @@ def long_description(script, marks, config, affiliates):
         parts.append("Chapters\n" + "\n".join(f"{m['time']} {m['title']}" for m in marks))
     links = tool_lines(script.get("tools", []), affiliates)
     if links:
-        parts.append("Tools in this video\n" + "\n".join(links))
+        parts.append("Mentioned in this video\n" + "\n".join(links))
     parts.append(config["affiliate_disclosure"])
     sources = script.get("sources", [])[:6]
     if sources:
         parts.append("Sources\n" + "\n".join(sources))
+    if os.environ.get("PIXABAY_API_KEY"):
+        parts.append("Stock footage: Pixabay (pixabay.com)")
     if config.get("voice_mode") == "elevenlabs":
         parts.append("Narrated with an AI clone of my own voice.")
     return "\n\n".join(parts)[:4900]

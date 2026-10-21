@@ -13,7 +13,7 @@ import sys
 
 from common import MOCK, OUT, ROOT, cfg, load, save, shorts_for_today, summary
 
-VISUAL_TYPES = {"title", "web", "table", "bullets", "steps", "verdict", "outro"}
+VISUAL_TYPES = {"broll", "rank", "stat", "title", "web", "table", "bullets", "steps", "verdict", "outro"}
 
 
 def pick_topic(exclude=()):
@@ -33,28 +33,34 @@ def pick_topic(exclude=()):
 
 SCHEMA = """{
   "topic_id": "kebab-case id",
-  "title": "YouTube title, max 70 characters, specific and honest, no clickbait lies",
+  "title": "YouTube title, max 70 characters, curiosity-driven but honest (no false claims)",
   "description_intro": "2-3 sentence YouTube description opening",
   "tags": ["8-15 search tags"],
-  "tools": ["exact tool names featured, matching the affiliate list where possible"],
-  "thumbnail": {"headline": "2-5 punchy words", "tools": ["1-3 tool names shown as labels"]},
+  "tools": ["brands or products named in the video, if any (for the description links)"],
+  "thumbnail": {"headline": "2-5 punchy words", "tags": ["1-3 short labels"], "broll": "2-4 word stock photo search"},
   "scenes": [
-    {"chapter": "short chapter label", "narration": "spoken text", "visual": VISUAL}
+    {"chapter": "short chapter label", "narration": "spoken text", "broll": "2-4 word stock footage search", "visual": VISUAL}
   ],
   "shorts": [
-    {"title": "max 70 characters", "scenes": [{"narration": "spoken text", "visual": VISUAL}]}
+    {"title": "max 70 characters", "scenes": [{"narration": "spoken text", "broll": "2-4 word stock footage search", "visual": VISUAL}]}
   ],
-  "facts_to_check": [{"claim": "a price, limit or feature claim used in narration", "source": "https://..."}],
+  "facts_to_check": [{"claim": "every statistic, date, price or forecast used in narration", "source": "https://..."}],
   "sources": ["https://... pages you relied on"]
 }
 
+"broll" is the search phrase for free stock footage shown behind the scene. Make it concrete and filmable,
+e.g. "smart fridge kitchen", "electric car charging", "robot vacuum floor", "city traffic night".
+Avoid brand names and abstract words in broll.
+
 VISUAL is ONE of:
+  {"type": "broll", "caption": "max 7 punchy words shown big over full-screen footage"}
+  {"type": "rank", "number": 3, "heading": "the trend's name, max 7 words", "sub": "max 10 words"}
+  {"type": "stat", "value": "short number like 68% or $1.2T or 2029", "label": "what it means, max 12 words", "source": "short source name"}
   {"type": "title", "heading": "max 8 words", "sub": "max 12 words"}
-  {"type": "web", "url": "https://public page on the tool's own site (home, pricing, features, a docs page). No login pages.", "label": "what the page is, max 6 words"}
-  {"type": "table", "heading": "max 8 words", "columns": ["", "Tool A", "Tool B"], "rows": [["Row label", "value", "value"]]}
-  {"type": "bullets", "heading": "max 8 words", "items": ["max 9 words each, 2-5 items"]}
-  {"type": "steps", "heading": "max 8 words", "items": ["numbered steps, max 10 words each, 2-5 items"]}
-  {"type": "verdict", "heading": "max 8 words", "items": ["Pick X if ...", "Pick Y if ..."]}
+  {"type": "table", "heading": "max 8 words", "columns": ["", "A", "B"], "rows": [["Row label", "value", "value"]]}
+  {"type": "bullets", "heading": "max 8 words", "items": ["max 9 words each, 2-4 items"]}
+  {"type": "verdict", "heading": "max 8 words", "items": ["max 10 words each, 2-3 items"]}
+  {"type": "web", "url": "https://a public product or company page", "label": "max 6 words"}
   {"type": "outro", "heading": "max 8 words", "sub": "max 12 words"}"""
 
 
@@ -65,32 +71,44 @@ def build_prompt(topic, config, n_shorts):
     words = (int(lo * 150), int(hi * 150))
     s_words = (int(s_lo * 2.4), int(s_hi * 2.4))
     if topic:
-        topic_text = (f'Topic id: {topic["id"]}\nType: {topic["type"]}\nWorking title: {topic["title"]}\n'
-                      f'Tools: {", ".join(topic.get("tools", [])) or "choose the right ones"}')
+        topic_text = f'Topic id: {topic["id"]}\nFormat: {topic["type"]}\nWorking title: {topic["title"]}'
     else:
-        topic_text = ("No topic was given. Use web search to find a timely, high-interest topic for this "
-                      "audience: a comparison of two or three popular AI or productivity tools, or practical "
-                      "tips for one tool. Prefer tools that run affiliate programs.")
+        topic_text = ("No topic was given. Use web search to find a timely, high-interest consumer technology "
+                      "topic: a trends countdown, a 'what is the future of...' explainer, or a comparison of two "
+                      "countries, products or approaches.")
     system = f"""You write scripts for the YouTube channel "{config['channel_name']}" ({config['channel_tagline']}).
 The narrator speaks in the first person and is {config['presenter']}. Audience: {config['audience']}.
 Today is {today:%d %B %Y}.
 
-Research first. Use web search to confirm current plans, prices, free tiers, limits and notable recent changes, preferring each tool's own website. Never invent a price, number or feature. If you cannot confirm something, leave it out. Mention prices with "as of {today:%B %Y}" once in the video.
+Research first. Use web search to find what is genuinely new or coming: real products, launches, pilots, company
+announcements, market data and expert forecasts. Prefer reputable sources (company sites, major news, research firms).
+Never invent a number, product, date or quote. If you cannot confirm something, leave it out. Every statistic in the
+narration goes in facts_to_check with its source. Say "as of {today:%B %Y}" when a fact may change soon.
+
+Formats:
+- trends: a countdown of 5 to 7 trends. For each: a "rank" scene naming it, then 1-2 scenes explaining what it is,
+  a real example product or company, and what it means for the viewer's daily life.
+- explainer: where things are today, what's coming in 2-5 years, what's hype vs real, what it means for the viewer.
+- versus: the two sides compared fairly on 3-5 points with a "table" scene, then a balanced conclusion.
 
 Voice and style:
-- Spoken, conversational English. Short sentences. Contractions. Easy to read aloud in one take: no tongue-twisters, no long lists of numbers in one sentence.
-- Never invent personal experience ("I've used it for two years", "my team switched last month"). Base opinions on the research and say so naturally ("from what I've seen", "based on their plans").
-- Write numbers and prices the way they are spoken: "$12 a month", not "$12/mo"; "version 4", not "v4".
-- Open with a hook in the first two sentences that says exactly what the viewer gets. Never "in today's video" or "welcome back".
-- Be genuinely useful and honest: real pros and cons, who each tool is for, and a clear verdict. Opinions in first person ("I'd pick..."), based on the research.
-- No hype words: game-changer, revolutionary, unleash, supercharge, insane, mind-blowing.
-- Only mention links once, at the end: "links to everything are in the description".
+- Spoken, conversational English. Short sentences. Contractions. Easy to read aloud in one take.
+- Never invent personal experience. Opinions are clearly marked as opinions ("my bet is...").
+- Write numbers the way they're spoken: "68 percent", "1.2 trillion dollars", "by 2030".
+- Open with a hook in the first two sentences: a surprising fact or a vivid picture of the near future.
+  Never "in today's video" or "welcome back".
+- Wonder without hype. No: game-changer, revolutionary, unleash, mind-blowing, insane.
+- End with a question for the comments and a reason to subscribe.
 
-Long video: 8 to 14 scenes, {words[0]} to {words[1]} words of narration in total, 25 to 90 words per scene. Give scenes a "chapter" label; neighbouring scenes may share one; use at least 4 different chapters, the first one "Intro". At least 40% of scenes must use a "web" visual showing the real tool. Finish with a verdict scene and an outro scene.
+Long video: 9 to 16 scenes, {words[0]} to {words[1]} words of narration in total, 20 to 80 words per scene.
+Give scenes a "chapter" label (use at least 4, the first one "Intro"). Mix visuals for variety: about a third "broll",
+plus "rank", "stat" and "table" where they fit. Use "web" at most twice. Never use the same visual type 3 times in a row.
 
-Shorts: write exactly {n_shorts}. Each stands alone, {s_words[0]} to {s_words[1]} words, 2 to 4 scenes, the first sentence is the hook, the last sentence points to the full video on the channel. Tables in Shorts: at most 3 columns and 3 rows.
+Shorts: write exactly {n_shorts}. Each stands alone, {s_words[0]} to {s_words[1]} words, 2 to 4 scenes. The first
+sentence is a strong hook; the last points to the full video on the channel. Prefer "broll" and "stat" visuals.
+Tables in Shorts: at most 3 columns and 3 rows.
 
-Each scene has exactly one visual that matches what the narration is saying at that moment.
+Each scene has exactly one visual that matches what the narration says at that moment, and its own "broll" search.
 
 Reply with the JSON only, wrapped in <json></json>, following this schema:
 {SCHEMA}"""
@@ -107,8 +125,8 @@ def parse(text):
 def validate(script, n_shorts, config):
     problems = []
     scenes = script.get("scenes") or []
-    if not 6 <= len(scenes) <= 16:
-        problems.append(f"long video has {len(scenes)} scenes, needs 8-14")
+    if not 7 <= len(scenes) <= 18:
+        problems.append(f"long video has {len(scenes)} scenes, needs 9-16")
     words = sum(len(s.get("narration", "").split()) for s in scenes)
     lo, hi = config["long_video_minutes"]
     if not lo * 150 * 0.8 <= words <= hi * 150 * 1.2:
@@ -120,6 +138,8 @@ def validate(script, n_shorts, config):
         v = s.get("visual", {})
         if v.get("type") not in VISUAL_TYPES:
             problems.append(f"unknown visual type {v.get('type')}")
+        if not s.get("broll"):
+            s["broll"] = v.get("heading") or v.get("caption") or "technology"
         if v.get("type") == "web" and not str(v.get("url", "")).startswith("http"):
             problems.append(f"web visual without a valid url: {v}")
         if not s.get("narration", "").strip():

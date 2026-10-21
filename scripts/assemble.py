@@ -6,36 +6,66 @@ captions), levels the audio for YouTube, and works out chapter timestamps.
 import json
 import re
 
-from common import OUT, cfg, read_out, run, save
+from common import OUT, ROOT, cfg, read_out, run, save
 
 FONT = "Inter"
 
 
-def mux_scene(sc, out_path):
-    dur = sc["seconds"] + sc["pad"]
-    run(["ffmpeg", "-hide_banner", "-loglevel", "error", "-y",
-         "-i", sc["clip"], "-i", sc["audio"],
-         "-filter_complex", "[1:a]aresample=48000,aformat=channel_layouts=stereo,apad[a]",
-         "-map", "0:v", "-map", "[a]", "-t", f"{dur:.3f}",
-         "-c:v", "copy", "-c:a", "aac", "-b:a", "192k", str(out_path)])
+XF = 0.4   # length of the transition between scenes (seconds)
+TRANSITIONS = ["smoothleft", "fade", "smoothup", "fade", "slideleft", "fade"]
 
 
-def concat(parts, out_path, captions=None):
-    listfile = out_path.with_suffix(".txt")
-    listfile.write_text("".join(f"file '{p.resolve()}'\n" for p in parts))
-    joined = out_path.with_name(out_path.stem + "_joined.mp4")
-    run(["ffmpeg", "-hide_banner", "-loglevel", "error", "-y", "-f", "concat", "-safe", "0",
-         "-i", str(listfile), "-c", "copy", str(joined)])
-    vcodec = ["-c:v", "copy"]
-    vf = []
+def pick_music(seed):
+    """Optional: any .mp3/.m4a/.wav you put in the music/ folder (e.g. from the YouTube Audio Library)."""
+    folder = ROOT / "music"
+    tracks = sorted(p for p in folder.glob("*") if p.suffix.lower() in (".mp3", ".m4a", ".wav", ".ogg")) if folder.exists() else []
+    return tracks[seed % len(tracks)] if tracks else None
+
+
+def edit(scenes, out_path, kind, config, captions=None, seed=0):
+    """Join scene clips with smooth transitions, lay the narration on top, add music and the progress bar."""
+    n = len(scenes)
+    durs = [sc["seconds"] + sc["pad"] for sc in scenes]
+    total = sum(durs)
+    inputs, fc = [], []
+    for sc in scenes:
+        inputs += ["-i", sc["clip"]]
+    for sc in scenes:
+        inputs += ["-i", sc["audio"]]
+    # video: each clip runs XF longer than its scene, and blends into the next one
+    last, offset = "0:v", 0.0
+    for k in range(1, n):
+        offset += durs[k - 1]
+        fc.append(f"[{last}][{k}:v]xfade=transition={TRANSITIONS[(k + seed) % len(TRANSITIONS)]}:"
+                  f"duration={XF}:offset={offset:.3f}[x{k}]")
+        last = f"x{k}"
+    post = ["format=yuv420p"]
+    if kind == "long":
+        accent = config["brand"]["accent"].lstrip("#")
+        post.insert(0, f"drawbox=x=0:y=ih-6:w='iw*t/{total:.3f}':h=6:color=0x{accent}@0.9:t=fill")
     if captions:
-        vf = ["-vf", f"ass={captions}"]
-        vcodec = ["-c:v", "libx264", "-preset", "veryfast", "-crf", "20", "-pix_fmt", "yuv420p"]
-    run(["ffmpeg", "-hide_banner", "-loglevel", "error", "-y", "-i", str(joined), *vf, *vcodec,
-         "-af", "loudnorm=I=-14:TP=-1.5:LRA=11", "-ar", "48000", "-c:a", "aac", "-b:a", "192k",
-         "-movflags", "+faststart", str(out_path)])
-    listfile.unlink()
-    joined.unlink()
+        post.insert(0, f"ass={captions}")
+    fc.append(f"[{last}]{','.join(post)}[v]")
+    # audio: every scene's narration padded to its scene length, back to back
+    for i in range(n):
+        fc.append(f"[{n + i}:a]aresample=48000,aformat=channel_layouts=stereo,apad=whole_dur={durs[i]:.3f}[a{i}]")
+    fc.append("".join(f"[a{i}]" for i in range(n)) + f"concat=n={n}:v=0:a=1[voice]")
+    music = pick_music(seed)
+    if music:
+        inputs += ["-stream_loop", "-1", "-i", str(music)]
+        fc.append(f"[{2 * n}:a]aresample=48000,aformat=channel_layouts=stereo,volume=0.12,"
+                  f"afade=t=out:st={max(0, total - 2.5):.3f}:d=2.5[mus]")
+        fc.append("[voice]asplit=2[v1][v2]")
+        fc.append("[mus][v2]sidechaincompress=threshold=0.02:ratio=6:attack=15:release=450[duck]")
+        fc.append("[v1][duck]amix=inputs=2:duration=first:normalize=0[mix]")
+        fc.append("[mix]loudnorm=I=-14:TP=-1.5:LRA=11[a]")
+        print(f"  music: {music.name}")
+    else:
+        fc.append("[voice]loudnorm=I=-14:TP=-1.5:LRA=11[a]")
+    run(["ffmpeg", "-hide_banner", "-loglevel", "error", "-y", *inputs, "-filter_complex", ";".join(fc),
+         "-map", "[v]", "-map", "[a]", "-t", f"{total:.3f}",
+         "-c:v", "libx264", "-preset", "veryfast", "-crf", "20", "-r", "30",
+         "-ar", "48000", "-c:a", "aac", "-b:a", "192k", "-movflags", "+faststart", str(out_path)])
 
 
 def ts(seconds):
@@ -129,28 +159,14 @@ Format: Layer, Start, End, Style, Name, MarginL, MarginR, MarginV, Effect, Text
 def main():
     config = cfg()
     timeline = read_out("timeline.json")
-    work = OUT / "av"
-    work.mkdir(parents=True, exist_ok=True)
-
-    parts = []
-    for i, sc in enumerate(timeline["long"]):
-        p = work / f"long_{i:02d}.mp4"
-        mux_scene(sc, p)
-        parts.append(p)
-    concat(parts, OUT / "long.mp4")
+    seed = sum(map(ord, read_out("script.json").get("title", "")))
+    edit(timeline["long"], OUT / "long.mp4", "long", config, seed=seed)
     marks = chapters(timeline["long"])
-
     for short in timeline["shorts"]:
         n = short.get("index", timeline["shorts"].index(short))
-        parts = []
-        for i, sc in enumerate(short["scenes"]):
-            p = work / f"short{n}_{i:02d}.mp4"
-            mux_scene(sc, p)
-            parts.append(p)
         ass = OUT / f"short_{n}.ass"
         caption_file(short["scenes"], ass, config["brand"])
-        concat(parts, OUT / f"short_{n}.mp4", captions=ass)
-
+        edit(short["scenes"], OUT / f"short_{n}.mp4", "short", config, captions=ass, seed=seed + n + 1)
     save(OUT / "chapters.json", marks)
     print("Chapters:", json.dumps(marks))
 

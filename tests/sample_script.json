@@ -1,35 +1,35 @@
 {
   "topic_id": "sample-test",
-  "title": "SAMPLE: Notion vs ClickUp for managing projects",
-  "description_intro": "This is test content used to check the pipeline. It is never uploaded.",
-  "tags": ["notion vs clickup", "project management tools", "sample"],
-  "tools": ["Notion", "ClickUp"],
-  "thumbnail": {"headline": "Notion vs ClickUp", "tools": ["Notion", "ClickUp"]},
+  "title": "SAMPLE: Top Kitchen Technology Trends",
+  "description_intro": "Test content used to check the pipeline. It is never uploaded.",
+  "tags": ["kitchen technology", "smart kitchen", "tech trends", "sample"],
+  "tools": [],
+  "thumbnail": {"headline": "Your Kitchen in 2027", "tags": ["5 Trends", "Smart Home"], "broll": "modern smart kitchen"},
   "scenes": [
-    {"chapter": "Intro", "narration": "If you manage projects and you're stuck choosing between Notion and ClickUp, this video gives you a straight answer in five minutes. This is sample narration used to test the video pipeline.",
-     "visual": {"type": "title", "heading": "Notion vs ClickUp", "sub": "Which one should run your projects?"}},
-    {"chapter": "Intro", "narration": "Here's the sample website capture. The pipeline opens the real page, captures all of it, and scrolls through it slowly while I talk.",
-     "visual": {"type": "web", "url": "http://127.0.0.1:8765/pricing.html", "label": "Sample pricing page"}},
-    {"chapter": "Pricing", "narration": "Let's compare the plans side by side. Each row of this table appears as I talk about it, so viewers can follow along without reading ahead.",
-     "visual": {"type": "table", "heading": "Plans compared (sample data)", "columns": ["", "Notion", "ClickUp"], "rows": [["Free plan", "Yes", "Yes"], ["Paid from", "$X a month", "$Y a month"], ["Best for", "Docs and wikis", "Task tracking"]]}},
-    {"chapter": "Features", "narration": "Here are the three things that matter most for project managers. First, how tasks are tracked. Second, how documents connect to them. Third, how easy reporting is.",
-     "visual": {"type": "bullets", "heading": "What matters for PMs", "items": ["Task tracking and views", "Docs linked to tasks", "Reporting and dashboards"]}},
-    {"chapter": "Setup", "narration": "Setting up a project takes four steps. Create the space, add your task list, invite the team, and pick the view you'll use every day.",
-     "visual": {"type": "steps", "heading": "Set up a project", "items": ["Create a project space", "Add your task list", "Invite your team", "Pick your daily view"]}},
-    {"chapter": "Verdict", "narration": "So which one should you pick? If your team lives in documents, go with Notion. If you need detailed task tracking, go with ClickUp.",
-     "visual": {"type": "verdict", "heading": "My verdict", "items": ["Pick Notion if your work lives in docs", "Pick ClickUp if you track lots of tasks"]}},
-    {"chapter": "Verdict", "narration": "Links to everything are in the description. Thanks for watching.",
-     "visual": {"type": "outro", "heading": "Thanks for watching", "sub": "Links to both tools are in the description"}}
+    {"chapter": "Intro", "broll": "modern kitchen cooking", "narration": "Your kitchen is about to get a lot smarter. This is sample narration used to test the video pipeline, with stock footage behind every scene.",
+     "visual": {"type": "broll", "caption": "Your kitchen is getting smarter"}},
+    {"chapter": "Intro", "broll": "smart fridge kitchen", "narration": "Here's a big number card. Stats like this pop up over blurred footage, with the source underneath.",
+     "visual": {"type": "stat", "value": "XX%", "label": "of new kitchens will include a connected appliance (sample)", "source": "Sample Research, 2026"}},
+    {"chapter": "Trend 3", "broll": "induction cooktop cooking", "narration": "Trend number three. Countdown titles look like this, with the number big and bold over the footage.",
+     "visual": {"type": "rank", "number": 3, "heading": "Cooktops that cook for you", "sub": "Sensors that stop food burning"}},
+    {"chapter": "Trend 3", "broll": "chef cooking vegetables", "narration": "Lists build one line at a time as I talk, so viewers can follow along without reading ahead.",
+     "visual": {"type": "bullets", "heading": "What changes for you", "items": ["Fewer burnt dinners", "Recipes that set the heat", "Less time watching the pan"]}},
+    {"chapter": "Trend 2", "broll": "robot arm kitchen", "narration": "Here's the sample website, shown inside a browser window floating over blurred footage.",
+     "visual": {"type": "web", "url": "http://127.0.0.1:8765/pricing.html", "label": "Sample product page"}},
+    {"chapter": "Compared", "broll": "family dinner kitchen", "narration": "And comparisons use a table that fills in row by row over the footage.",
+     "visual": {"type": "table", "heading": "Then vs now (sample)", "columns": ["", "2020", "2027"], "rows": [["Cooktop", "Manual", "Sensor-led"], ["Fridge", "Cold box", "Tracks food"], ["Oven", "Timer", "Camera inside"]]}},
+    {"chapter": "Outro", "broll": "kitchen evening lights", "narration": "Which of these would you actually use? Tell me in the comments, and subscribe for more of the future.",
+     "visual": {"type": "outro", "heading": "Which would you use?", "sub": "Tell me in the comments"}}
   ],
   "shorts": [
-    {"title": "SAMPLE: Notion or ClickUp in 40 seconds", "scenes": [
-      {"narration": "Notion or ClickUp? Here's the forty second answer. This is sample narration for testing.", "visual": {"type": "title", "heading": "Notion or ClickUp?", "sub": "The 40-second answer"}},
-      {"narration": "Here's the sample page scrolling on a phone-sized screen.", "visual": {"type": "web", "url": "http://127.0.0.1:8765/pricing.html", "label": "Sample pricing page"}},
-      {"narration": "Pick Notion if your work lives in docs. Pick ClickUp if you track lots of tasks. The full comparison is on my channel.", "visual": {"type": "verdict", "heading": "Quick verdict", "items": ["Docs first: Notion", "Tasks first: ClickUp"]}}
+    {"title": "SAMPLE: Your fridge will order food for you", "scenes": [
+      {"broll": "smart fridge kitchen", "narration": "Your fridge is about to start doing your shopping. This is sample narration for testing.", "visual": {"type": "broll", "caption": "Your fridge will shop for you"}},
+      {"broll": "grocery delivery", "narration": "Here's a stat card on a phone-sized screen.", "visual": {"type": "stat", "value": "XX%", "label": "sample statistic for testing", "source": "Sample source"}},
+      {"broll": "kitchen evening lights", "narration": "The full video on the five biggest kitchen trends is on my channel.", "visual": {"type": "outro", "heading": "Full video on the channel", "sub": "5 kitchen tech trends"}}
     ]},
-    {"title": "SAMPLE: 3 things PMs need in a tool", "scenes": [
-      {"narration": "Three things every project manager needs in a tool. Number one, clear task views.", "visual": {"type": "steps", "heading": "3 must-haves", "items": ["Clear task views", "Linked documents", "Easy reporting"]}},
-      {"narration": "Number two, documents linked to the work. Number three, reporting your boss can read. Full video on my channel.", "visual": {"type": "outro", "heading": "Full video on the channel", "sub": "Notion vs ClickUp"}}
+    {"title": "SAMPLE: The cooktop that won't let you burn dinner", "scenes": [
+      {"broll": "induction cooktop cooking", "narration": "This cooktop won't let you burn dinner.", "visual": {"type": "rank", "number": 1, "heading": "Self-watching cooktops", "sub": "Sample short"}},
+      {"broll": "chef cooking vegetables", "narration": "Sensors watch the pan and turn the heat down for you. Full video on my channel.", "visual": {"type": "broll", "caption": "Sensors watch the pan"}}
     ]}
   ],
   "facts_to_check": [{"claim": "Sample claim only", "source": "https://example.com"}],
