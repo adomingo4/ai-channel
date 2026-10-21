@@ -1,0 +1,37 @@
+{
+  "topic_id": "sample-test",
+  "title": "SAMPLE: Notion vs ClickUp for managing projects",
+  "description_intro": "This is test content used to check the pipeline. It is never uploaded.",
+  "tags": ["notion vs clickup", "project management tools", "sample"],
+  "tools": ["Notion", "ClickUp"],
+  "thumbnail": {"headline": "Notion vs ClickUp", "tools": ["Notion", "ClickUp"]},
+  "scenes": [
+    {"chapter": "Intro", "narration": "If you manage projects and you're stuck choosing between Notion and ClickUp, this video gives you a straight answer in five minutes. This is sample narration used to test the video pipeline.",
+     "visual": {"type": "title", "heading": "Notion vs ClickUp", "sub": "Which one should run your projects?"}},
+    {"chapter": "Intro", "narration": "Here's the sample website capture. The pipeline opens the real page, captures all of it, and scrolls through it slowly while I talk.",
+     "visual": {"type": "web", "url": "http://127.0.0.1:8765/pricing.html", "label": "Sample pricing page"}},
+    {"chapter": "Pricing", "narration": "Let's compare the plans side by side. Each row of this table appears as I talk about it, so viewers can follow along without reading ahead.",
+     "visual": {"type": "table", "heading": "Plans compared (sample data)", "columns": ["", "Notion", "ClickUp"], "rows": [["Free plan", "Yes", "Yes"], ["Paid from", "$X a month", "$Y a month"], ["Best for", "Docs and wikis", "Task tracking"]]}},
+    {"chapter": "Features", "narration": "Here are the three things that matter most for project managers. First, how tasks are tracked. Second, how documents connect to them. Third, how easy reporting is.",
+     "visual": {"type": "bullets", "heading": "What matters for PMs", "items": ["Task tracking and views", "Docs linked to tasks", "Reporting and dashboards"]}},
+    {"chapter": "Setup", "narration": "Setting up a project takes four steps. Create the space, add your task list, invite the team, and pick the view you'll use every day.",
+     "visual": {"type": "steps", "heading": "Set up a project", "items": ["Create a project space", "Add your task list", "Invite your team", "Pick your daily view"]}},
+    {"chapter": "Verdict", "narration": "So which one should you pick? If your team lives in documents, go with Notion. If you need detailed task tracking, go with ClickUp.",
+     "visual": {"type": "verdict", "heading": "My verdict", "items": ["Pick Notion if your work lives in docs", "Pick ClickUp if you track lots of tasks"]}},
+    {"chapter": "Verdict", "narration": "Links to everything are in the description. Thanks for watching.",
+     "visual": {"type": "outro", "heading": "Thanks for watching", "sub": "Links to both tools are in the description"}}
+  ],
+  "shorts": [
+    {"title": "SAMPLE: Notion or ClickUp in 40 seconds", "scenes": [
+      {"narration": "Notion or ClickUp? Here's the forty second answer. This is sample narration for testing.", "visual": {"type": "title", "heading": "Notion or ClickUp?", "sub": "The 40-second answer"}},
+      {"narration": "Here's the sample page scrolling on a phone-sized screen.", "visual": {"type": "web", "url": "http://127.0.0.1:8765/pricing.html", "label": "Sample pricing page"}},
+      {"narration": "Pick Notion if your work lives in docs. Pick ClickUp if you track lots of tasks. The full comparison is on my channel.", "visual": {"type": "verdict", "heading": "Quick verdict", "items": ["Docs first: Notion", "Tasks first: ClickUp"]}}
+    ]},
+    {"title": "SAMPLE: 3 things PMs need in a tool", "scenes": [
+      {"narration": "Three things every project manager needs in a tool. Number one, clear task views.", "visual": {"type": "steps", "heading": "3 must-haves", "items": ["Clear task views", "Linked documents", "Easy reporting"]}},
+      {"narration": "Number two, documents linked to the work. Number three, reporting your boss can read. Full video on my channel.", "visual": {"type": "outro", "heading": "Full video on the channel", "sub": "Notion vs ClickUp"}}
+    ]}
+  ],
+  "facts_to_check": [{"claim": "Sample claim only", "source": "https://example.com"}],
+  "sources": ["https://example.com"]
+}

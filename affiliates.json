@@ -1,0 +1,32 @@
+{
+  "_help": "Paste your affiliate link next to each tool once you are approved. Leave a link empty to use the tool's normal website instead. Add new tools in the same format. Names must match how the tool is usually written.",
+  "tools": {
+    "ElevenLabs":   {"site": "https://elevenlabs.io",        "link": ""},
+    "Jasper":       {"site": "https://www.jasper.ai",        "link": ""},
+    "Writesonic":   {"site": "https://writesonic.com",       "link": ""},
+    "Synthesia":    {"site": "https://www.synthesia.io",     "link": ""},
+    "HeyGen":       {"site": "https://www.heygen.com",       "link": ""},
+    "Surfer":       {"site": "https://surferseo.com",        "link": ""},
+    "Semrush":      {"site": "https://www.semrush.com",      "link": ""},
+    "Pictory":      {"site": "https://pictory.ai",           "link": ""},
+    "Murf":         {"site": "https://murf.ai",              "link": ""},
+    "Speechify":    {"site": "https://speechify.com",        "link": ""},
+    "Notion":       {"site": "https://www.notion.com",       "link": ""},
+    "ClickUp":      {"site": "https://clickup.com",          "link": ""},
+    "monday.com":   {"site": "https://monday.com",           "link": ""},
+    "Asana":        {"site": "https://asana.com",            "link": ""},
+    "Grammarly":    {"site": "https://www.grammarly.com",    "link": ""},
+    "Otter":        {"site": "https://otter.ai",             "link": ""},
+    "Fireflies":    {"site": "https://fireflies.ai",         "link": ""},
+    "Descript":     {"site": "https://www.descript.com",     "link": ""},
+    "Canva":        {"site": "https://www.canva.com",        "link": ""},
+    "Gamma":        {"site": "https://gamma.app",            "link": ""},
+    "Zapier":       {"site": "https://zapier.com",           "link": ""},
+    "Make":         {"site": "https://www.make.com",         "link": ""},
+    "ChatGPT":      {"site": "https://chatgpt.com",          "link": ""},
+    "Claude":       {"site": "https://claude.ai",            "link": ""},
+    "Gemini":       {"site": "https://gemini.google.com",    "link": ""},
+    "Perplexity":   {"site": "https://www.perplexity.ai",    "link": ""},
+    "Microsoft Copilot": {"site": "https://copilot.microsoft.com", "link": ""}
+  }
+}

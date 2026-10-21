@@ -1,0 +1,57 @@
+{
+  "channel_name": "Techtenoris",
+  "channel_tagline": "AI tools, compared honestly",
+  "audience": "busy professionals, project managers and small business owners who want to work faster with AI and software",
+  "presenter": "a project manager with 15+ years of experience who tests AI and productivity tools for real work",
+  "script_provider": "gemini",
+  "gemini_model": "auto",
+  "claude_model": "claude-sonnet-5-5",
+  "web_search_tool": "web_search_20250305",
+  "max_searches": 8,
+  "long_video_minutes": [
+    3.5,
+    5.5
+  ],
+  "short_seconds": [
+    35,
+    55
+  ],
+  "videos_per_week": 2,
+  "shorts_per_video": [
+    2,
+    1
+  ],
+  "voice_mode": "recorded",
+  "whisper_model": "small.en",
+  "elevenlabs_model": "eleven_multilingual_v2",
+  "voice_settings": {
+    "stability": 0.5,
+    "similarity_boost": 0.8,
+    "style": 0.15,
+    "use_speaker_boost": true
+  },
+  "privacy": "private",
+  "category_id": "28",
+  "ai_disclosure": false,
+  "default_language": "en",
+  "brand": {
+    "background": "#0F1222",
+    "panel": "#1A1F36",
+    "text": "#F5F6FA",
+    "muted": "#AEB4CC",
+    "accent": "#7C9CFF",
+    "accent_2": "#FF8A5B",
+    "good": "#4ADE9B",
+    "bad": "#FF6B7A",
+    "font": "Inter"
+  },
+  "affiliate_disclosure": "Some links above are affiliate links. If you sign up through them I may earn a commission at no extra cost to you. Opinions are my own, and no company sees or approves these videos before they go live.",
+  "_help": {
+    "script_provider": "gemini = free tier (needs GEMINI_API_KEY). claude = paid API (needs ANTHROPIC_API_KEY).",
+    "gemini_model": "auto picks the newest free Flash model; or name one, e.g. gemini-3-flash.",
+    "voice_mode": "recorded = you read the scripts (free). elevenlabs = your voice clone reads them (paid, fully automatic).",
+    "shorts_per_video": "Shorts for each of the week's videos: [2, 1] = 3 a week.",
+    "privacy": "Keep private: you review in YouTube Studio and publish or schedule yourself.",
+    "ai_disclosure": "Set true when using the ElevenLabs voice clone (ticks YouTube's 'altered or synthetic content' box)."
+  }
+}
