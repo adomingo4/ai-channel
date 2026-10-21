@@ -1,25 +1,105 @@
 {
-  "_help": "The pipeline takes the first topic not yet in state/used.json. Add, remove or reorder freely. type is 'comparison' or 'tips'. When the list runs out, it suggests a new topic itself.",
+  "_help": "The weekly script step takes the first topic not yet in state/used.json. Add, remove or reorder freely. type: 'trends' (numbered countdown), 'explainer' (what is the future of...), 'versus' (two countries, products or approaches compared). When the list runs out it suggests timely topics itself.",
   "topics": [
-    {"id": "notion-vs-clickup",        "type": "comparison", "title": "Notion vs ClickUp for managing projects", "tools": ["Notion", "ClickUp"]},
-    {"id": "chatgpt-pm-tips",          "type": "tips",       "title": "7 ChatGPT prompts every project manager should steal", "tools": ["ChatGPT"]},
-    {"id": "elevenlabs-vs-murf",       "type": "comparison", "title": "ElevenLabs vs Murf: which AI voice sounds most human", "tools": ["ElevenLabs", "Murf"]},
-    {"id": "meeting-notes-ai",         "type": "comparison", "title": "Otter vs Fireflies: the best AI meeting note taker", "tools": ["Otter", "Fireflies"]},
-    {"id": "claude-tips-docs",         "type": "tips",       "title": "5 Claude tricks for writing reports and documents faster", "tools": ["Claude"]},
-    {"id": "synthesia-vs-heygen",      "type": "comparison", "title": "Synthesia vs HeyGen: AI avatar videos compared", "tools": ["Synthesia", "HeyGen"]},
-    {"id": "chatgpt-claude-gemini",    "type": "comparison", "title": "ChatGPT vs Claude vs Gemini for everyday work", "tools": ["ChatGPT", "Claude", "Gemini"]},
-    {"id": "gamma-vs-canva-slides",    "type": "comparison", "title": "Gamma vs Canva: make a presentation in 5 minutes", "tools": ["Gamma", "Canva"]},
-    {"id": "zapier-vs-make",           "type": "comparison", "title": "Zapier vs Make: automate your work without code", "tools": ["Zapier", "Make"]},
-    {"id": "perplexity-research-tips", "type": "tips",       "title": "How to research anything in minutes with Perplexity", "tools": ["Perplexity"]},
-    {"id": "jasper-vs-writesonic",     "type": "comparison", "title": "Jasper vs Writesonic: AI writing tools for marketing", "tools": ["Jasper", "Writesonic"]},
-    {"id": "monday-vs-asana",          "type": "comparison", "title": "monday.com vs Asana for small teams", "tools": ["monday.com", "Asana"]},
-    {"id": "copilot-excel-tips",       "type": "tips",       "title": "6 Microsoft Copilot tricks for Excel and Outlook", "tools": ["Microsoft Copilot"]},
-    {"id": "descript-tips",            "type": "tips",       "title": "Edit video like a document with Descript", "tools": ["Descript"]},
-    {"id": "grammarly-vs-chatgpt",     "type": "comparison", "title": "Grammarly vs ChatGPT for polishing your writing", "tools": ["Grammarly", "ChatGPT"]},
-    {"id": "surfer-vs-semrush",        "type": "comparison", "title": "Surfer vs Semrush for writing content that ranks", "tools": ["Surfer", "Semrush"]},
-    {"id": "pictory-vs-descript",      "type": "comparison", "title": "Pictory vs Descript: turn text into video", "tools": ["Pictory", "Descript"]},
-    {"id": "ai-status-report",         "type": "tips",       "title": "Write a weekly status report in 2 minutes with AI", "tools": ["ChatGPT", "Claude"]},
-    {"id": "notion-ai-tips",           "type": "tips",       "title": "Notion AI features most people never use", "tools": ["Notion"]},
-    {"id": "speechify-vs-elevenlabs",  "type": "comparison", "title": "Speechify vs ElevenLabs reader: listen to anything", "tools": ["Speechify", "ElevenLabs"]}
+    {
+      "id": "kitchen-tech-trends",
+      "type": "trends",
+      "title": "Top Kitchen Technology Trends"
+    },
+    {
+      "id": "automotive-tech-trends",
+      "type": "trends",
+      "title": "Top Automotive Technology Trends That Will Change Your Driving Experience"
+    },
+    {
+      "id": "tech-trends-2027",
+      "type": "trends",
+      "title": "5 Tech Trends to Expect in 2027"
+    },
+    {
+      "id": "future-of-transportation",
+      "type": "explainer",
+      "title": "What Is the Future of Transportation?"
+    },
+    {
+      "id": "us-vs-china-smart-homes",
+      "type": "versus",
+      "title": "American vs Chinese Smart Homes in 2027"
+    },
+    {
+      "id": "home-robots",
+      "type": "trends",
+      "title": "Home Robots Are Coming: 6 You Could Own Soon"
+    },
+    {
+      "id": "future-of-shopping",
+      "type": "explainer",
+      "title": "What Will Shopping Look Like in 2030?"
+    },
+    {
+      "id": "smart-bathroom-tech",
+      "type": "trends",
+      "title": "Smart Bathroom Tech You Didn't Know Existed"
+    },
+    {
+      "id": "ev-vs-hydrogen",
+      "type": "versus",
+      "title": "Electric vs Hydrogen Cars: Which Future Wins?"
+    },
+    {
+      "id": "health-wearables-trends",
+      "type": "trends",
+      "title": "Health Wearables That Will Change How You See a Doctor"
+    },
+    {
+      "id": "future-of-work-offices",
+      "type": "explainer",
+      "title": "What Is the Future of the Office?"
+    },
+    {
+      "id": "smart-city-tech",
+      "type": "trends",
+      "title": "Smart City Technology Already Changing How We Live"
+    },
+    {
+      "id": "japan-vs-usa-robots",
+      "type": "versus",
+      "title": "Japan vs USA: Who Is Winning the Robot Race?"
+    },
+    {
+      "id": "future-of-flying",
+      "type": "explainer",
+      "title": "Flying Taxis and the Future of Air Travel"
+    },
+    {
+      "id": "smart-garden-farming",
+      "type": "trends",
+      "title": "Smart Gardening and Home Farming Tech Trends"
+    },
+    {
+      "id": "future-of-tv-entertainment",
+      "type": "explainer",
+      "title": "What Is the Future of TV and Home Entertainment?"
+    },
+    {
+      "id": "gulf-smart-cities",
+      "type": "versus",
+      "title": "NEOM vs Dubai vs Lusail: Smart Cities of the Gulf"
+    },
+    {
+      "id": "battery-tech-trends",
+      "type": "trends",
+      "title": "Battery Breakthroughs That Will Change Your Phone and Car"
+    },
+    {
+      "id": "future-of-food",
+      "type": "explainer",
+      "title": "Lab-Grown Meat, Vertical Farms and the Future of Food"
+    },
+    {
+      "id": "pet-tech-trends",
+      "type": "trends",
+      "title": "Pet Tech Trends Every Pet Owner Should Know"
+    }
   ]
 }

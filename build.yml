@@ -1,0 +1,86 @@
+name: Build videos
+
+on:
+  # runs by itself when you upload recordings into an episode folder
+  push:
+    paths:
+      - "episodes/**"
+  workflow_dispatch:
+    inputs:
+      episode:
+        description: "Episode folder, e.g. episodes/2026-10-29-notion-vs-clickup (blank = everything ready)"
+        required: false
+      mock:
+        description: "Free test: sample script + robot voice, nothing uploaded (true/false)"
+        required: false
+        default: "false"
+
+permissions:
+  contents: write
+
+concurrency:
+  group: pipeline
+  cancel-in-progress: false
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    timeout-minutes: 120
+    env:
+      MOCK: ${{ github.event.inputs.mock || 'false' }}
+      EPISODE: ${{ github.event.inputs.episode }}
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+
+      - name: Install tools
+        run: |
+          sudo apt-get update
+          sudo apt-get install -y ffmpeg fonts-inter espeak-ng
+          pip install requests anthropic faster-whisper playwright pillow google-api-python-client google-auth
+          python -m playwright install --with-deps chromium
+
+      - name: Reuse the speech-recognition model between runs
+        uses: actions/cache@v4
+        with:
+          path: ~/.cache/huggingface
+          key: whisper-small-en
+
+      - name: Prepare a test episode (test mode only)
+        if: env.MOCK == 'true'
+        run: |
+          (python -m http.server 8765 -d tests/site > /dev/null 2>&1 &)
+          VIDEOS=1 python scripts/new_episodes.py
+          python tests/make_mock_recordings.py "$(ls -d episodes/*-mock-1 | head -1)"
+          echo "EPISODE=$(ls -d episodes/*-mock-1 | head -1)" >> "$GITHUB_ENV"
+
+      - name: Build and upload everything that's ready
+        env:
+          PIXABAY_API_KEY: ${{ secrets.PIXABAY_API_KEY }}
+          PEXELS_API_KEY: ${{ secrets.PEXELS_API_KEY }}
+          ELEVENLABS_API_KEY: ${{ secrets.ELEVENLABS_API_KEY }}
+          ELEVENLABS_VOICE_ID: ${{ secrets.ELEVENLABS_VOICE_ID }}
+          YT_CLIENT_ID: ${{ secrets.YT_CLIENT_ID }}
+          YT_CLIENT_SECRET: ${{ secrets.YT_CLIENT_SECRET }}
+          YT_REFRESH_TOKEN: ${{ secrets.YT_REFRESH_TOKEN }}
+        run: python scripts/build_ready.py
+
+      - name: Mark episodes as built
+        if: env.MOCK != 'true'
+        run: |
+          git config user.name "video-bot"
+          git config user.email "video-bot@users.noreply.github.com"
+          git add episodes
+          git diff --cached --quiet || (git commit -m "Built and uploaded" && git push)
+
+      - name: Keep the finished videos for 7 days
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: finished-videos
+          path: finished/
+          retention-days: 7
+          if-no-files-found: ignore

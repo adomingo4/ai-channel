@@ -1,0 +1,37 @@
+{
+  "topic_id": "sample-test",
+  "title": "SAMPLE: Top Kitchen Technology Trends",
+  "description_intro": "Test content used to check the pipeline. It is never uploaded.",
+  "tags": ["kitchen technology", "smart kitchen", "tech trends", "sample"],
+  "tools": [],
+  "thumbnail": {"headline": "Your Kitchen in 2027", "tags": ["5 Trends", "Smart Home"], "broll": "modern smart kitchen"},
+  "scenes": [
+    {"chapter": "Intro", "broll": "modern kitchen cooking", "narration": "Your kitchen is about to get a lot smarter. This is sample narration used to test the video pipeline, with stock footage behind every scene.",
+     "visual": {"type": "broll", "caption": "Your kitchen is getting smarter"}},
+    {"chapter": "Intro", "broll": "smart fridge kitchen", "narration": "Here's a big number card. Stats like this pop up over blurred footage, with the source underneath.",
+     "visual": {"type": "stat", "value": "XX%", "label": "of new kitchens will include a connected appliance (sample)", "source": "Sample Research, 2026"}},
+    {"chapter": "Trend 3", "broll": "induction cooktop cooking", "narration": "Trend number three. Countdown titles look like this, with the number big and bold over the footage.",
+     "visual": {"type": "rank", "number": 3, "heading": "Cooktops that cook for you", "sub": "Sensors that stop food burning"}},
+    {"chapter": "Trend 3", "broll": "chef cooking vegetables", "narration": "Lists build one line at a time as I talk, so viewers can follow along without reading ahead.",
+     "visual": {"type": "bullets", "heading": "What changes for you", "items": ["Fewer burnt dinners", "Recipes that set the heat", "Less time watching the pan"]}},
+    {"chapter": "Trend 2", "broll": "robot arm kitchen", "narration": "Here's the sample website, shown inside a browser window floating over blurred footage.",
+     "visual": {"type": "web", "url": "http://127.0.0.1:8765/pricing.html", "label": "Sample product page"}},
+    {"chapter": "Compared", "broll": "family dinner kitchen", "narration": "And comparisons use a table that fills in row by row over the footage.",
+     "visual": {"type": "table", "heading": "Then vs now (sample)", "columns": ["", "2020", "2027"], "rows": [["Cooktop", "Manual", "Sensor-led"], ["Fridge", "Cold box", "Tracks food"], ["Oven", "Timer", "Camera inside"]]}},
+    {"chapter": "Outro", "broll": "kitchen evening lights", "narration": "Which of these would you actually use? Tell me in the comments, and subscribe for more of the future.",
+     "visual": {"type": "outro", "heading": "Which would you use?", "sub": "Tell me in the comments"}}
+  ],
+  "shorts": [
+    {"title": "SAMPLE: Your fridge will order food for you", "scenes": [
+      {"broll": "smart fridge kitchen", "narration": "Your fridge is about to start doing your shopping. This is sample narration for testing.", "visual": {"type": "broll", "caption": "Your fridge will shop for you"}},
+      {"broll": "grocery delivery", "narration": "Here's a stat card on a phone-sized screen.", "visual": {"type": "stat", "value": "XX%", "label": "sample statistic for testing", "source": "Sample source"}},
+      {"broll": "kitchen evening lights", "narration": "The full video on the five biggest kitchen trends is on my channel.", "visual": {"type": "outro", "heading": "Full video on the channel", "sub": "5 kitchen tech trends"}}
+    ]},
+    {"title": "SAMPLE: The cooktop that won't let you burn dinner", "scenes": [
+      {"broll": "induction cooktop cooking", "narration": "This cooktop won't let you burn dinner.", "visual": {"type": "rank", "number": 1, "heading": "Self-watching cooktops", "sub": "Sample short"}},
+      {"broll": "chef cooking vegetables", "narration": "Sensors watch the pan and turn the heat down for you. Full video on my channel.", "visual": {"type": "broll", "caption": "Sensors watch the pan"}}
+    ]}
+  ],
+  "facts_to_check": [{"claim": "Sample claim only", "source": "https://example.com"}],
+  "sources": ["https://example.com"]
+}

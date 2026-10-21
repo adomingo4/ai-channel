@@ -1,8 +1,8 @@
 {
   "channel_name": "Techtenoris",
-  "channel_tagline": "AI tools, compared honestly",
-  "audience": "busy professionals, project managers and small business owners who want to work faster with AI and software",
-  "presenter": "a project manager with 15+ years of experience who tests AI and productivity tools for real work",
+  "channel_tagline": "Tech trends and the future of everyday life",
+  "audience": "curious everyday viewers who want to know how new technology will change their homes, cars, kitchens, cities, health and work in the next few years",
+  "presenter": "a tech-curious engineer and project manager who explains new technology in plain words, without hype",
   "script_provider": "gemini",
   "gemini_model": "auto",
   "claude_model": "claude-sonnet-5-5",

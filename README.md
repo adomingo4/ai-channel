@@ -1,4 +1,4 @@
-# AI tools channel (free trial version)
+# Techtenoris: tech trends channel (free trial version)
 
 You read the scripts; everything else is automatic and costs nothing.
 
@@ -15,6 +15,8 @@ You read the scripts; everything else is automatic and costs nothing.
 - **Scripts:** Google Gemini API, free tier (with Google Search to check prices and features).
 - **Voice:** you.
 - **Speech matching:** Whisper, free and open source, runs on GitHub.
+- **Footage:** Pixabay stock videos and photos, free for commercial use.
+- **Music (optional):** tracks you add from the YouTube Audio Library or Pixabay Music.
 - **Running it:** GitHub Actions, free for private repositories up to 2,000 minutes a month (this uses about 70).
 - **YouTube** and **affiliate programs:** free.
 
@@ -34,6 +36,11 @@ Name it **Techtenoris** (already set in `config.json`).
 2. Click **Get API key > Create API key**. No card is needed.
 3. Copy the key.
 
+### 2b. Get a free Pixabay key (for stock footage)
+1. Sign up at **pixabay.com** (free).
+2. Open **pixabay.com/api/docs/** while logged in. Your key is shown in the **Parameters** table, next to `key`.
+3. Copy it. Without it, videos use moving colour backgrounds instead of footage.
+
 ### 3. Connect YouTube
 Reuse the Google Cloud project and `client_secret.json` from Colourinda.
 1. Run `python scripts/get_token.py client_secret.json` in this folder.
@@ -45,8 +52,8 @@ Reuse the Google Cloud project and `client_secret.json` from Colourinda.
 2. Upload everything in this folder **except** `client_secret.json`.
    Check that `.github/workflows/` holds `scripts.yml` and `build.yml`; if the folder didn't
    upload, create each file with **Add file > Create new file** and paste the contents.
-3. **Settings > Secrets and variables > Actions**, add 4 secrets:
-   `GEMINI_API_KEY`, `YT_CLIENT_ID`, `YT_CLIENT_SECRET`, `YT_REFRESH_TOKEN`.
+3. **Settings > Secrets and variables > Actions**, add 5 secrets:
+   `GEMINI_API_KEY`, `PIXABAY_API_KEY`, `YT_CLIENT_ID`, `YT_CLIENT_SECRET`, `YT_REFRESH_TOKEN`.
 4. **Settings > Notifications** (your account settings): make sure **Issues** emails are on,
    so the weekly "Record:" messages reach you.
 
@@ -60,6 +67,10 @@ When it's green (about 15 minutes), download **finished-videos** at the bottom o
 tells you exactly what to read and how to name the files.
 
 ---
+
+## Background music (optional)
+Drop calm instrumental tracks into the `music` folder (see `music/README.txt`). Each video
+uses one, quietly under your voice, dipping whenever you speak. Leave it empty for no music.
 
 ## Recording tips
 - Use your phone's voice recorder in a quiet room with soft furnishings (curtains,
@@ -99,7 +110,7 @@ list of prices and claims to double-check against their sources.
 | To change | Edit |
 | --- | --- |
 | Channel name, audience, colours | `config.json` |
-| Upcoming topics and their order | `topics.json` (when it runs out, it suggests topics itself) |
+| Upcoming topics and their order | `topics.json` (formats: `trends`, `explainer`, `versus`; when it runs out, it suggests topics itself) |
 | Videos per week, Shorts per video, length | `config.json` |
 | Script day and time | the `cron` line in `.github/workflows/scripts.yml` (UTC; Doha is UTC+3) |
 
